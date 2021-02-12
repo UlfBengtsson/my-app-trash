@@ -1,30 +1,51 @@
 import React, { Component } from "react";
 
 export default class FlavorForm extends Component {
-  state = { value: "coconut" };
+  state = {
+    idValue: -1,
+    pickList: [
+      { id: 1, flavor: "Coconut" },
+      { id: 2, flavor: "Grapefruit" },
+      { id: 3, flavor: "Lime" },
+      { id: 4, flavor: "Mango" },
+    ],
+  };
 
   handleChange = (event) => {
-    this.setState({ value: event.target.value });
+    this.setState({ idValue: Number(event.target.value) });
   };
 
   handleSubmit = (event) => {
-    alert("Your favorite flavor is: " + this.state.value);
     event.preventDefault();
+    const { idValue, pickList } = this.state;
+    let result;
+    for (let index = 0; index < pickList.length; index++) {
+      if (idValue === pickList[index].id) {
+        result = pickList[index];
+      }
+    }
+    console.log(result);
+    alert("Your favorite flavor is: " + result.flavor);
   };
 
   render() {
+    const { idValue, pickList } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
           Pick your favorite flavor:
-          <select value={this.state.value} onChange={this.handleChange}>
-            <option value="grapefruit">Grapefruit</option>
-            <option value="lime">Lime</option>
-            <option value="coconut">Coconut</option>
-            <option value="mango">Mango</option>
+          <select value={idValue} onChange={this.handleChange}>
+            <option value="-1" disabled>
+              Select flavor
+            </option>
+            {pickList.map((flavor) => (
+              <option key={"flavorId" + flavor.id} value={flavor.id}>
+                {flavor.flavor}
+              </option>
+            ))}
           </select>
         </label>
-        <input type="submit" value="Submit" />
+        <input type="submit" disabled={idValue === -1} value="Submit" />
       </form>
     );
   }
